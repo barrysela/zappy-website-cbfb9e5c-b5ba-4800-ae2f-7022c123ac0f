@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://assi-delivery-service-cbfb9e5c.zappy5.app/sitemap.xml
