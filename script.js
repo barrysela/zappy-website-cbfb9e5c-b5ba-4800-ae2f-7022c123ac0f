@@ -44,7 +44,7 @@ alert('תודה על פנייתך! ניצור איתך קשר בהקדם.');cont
 
 // Helper function to check cookie consent
 function hasConsentFor(category) {
-  if (typeof window.CookieConsent === '') {
+  if (typeof window.CookieConsent === 'undefined') {
     return false; // Default to no consent if cookie consent not loaded
   }
   
@@ -73,7 +73,7 @@ function withConsent(category, callback) {
     initAttempts++;
     
     
-    if (typeof window.CookieConsent === '') {
+    if (typeof window.CookieConsent === 'undefined') {
       if (initAttempts < maxAttempts) {
         setTimeout(initCookieConsent, 100);
       } else {
@@ -232,7 +232,7 @@ function withConsent(category, callback) {
   }
   
   // Additional fallback - try after page load
-  if (typeof window !== '') {
+  if (typeof window !== 'undefined') {
     if (window.addEventListener) {
       window.addEventListener('load', initCookieConsent, { once: true });
     }
@@ -306,91 +306,3 @@ window.onload = function() {
         }
     }, true);
 };
-
-/* Added Component Script */
-document.addEventListener('DOMContentLoaded', function() {
-  const faqItems = document.querySelectorAll('.faq-item');
-  
-  faqItems.forEach(item => {
-    const question = item.querySelector('.faq-question');
-    
-    question.addEventListener('click', function() {
-      const isActive = item.classList.contains('active');
-      
-      faqItems.forEach(otherItem => {
-        if (otherItem !== item && otherItem.classList.contains('active')) {
-          otherItem.classList.remove('active');
-        }
-      });
-      
-      if (!isActive) {
-        item.classList.add('active');
-      } else {
-        item.classList.remove('active');
-      }
-    });
-  });
-});
-
-/* Added Component Script */
-document.addEventListener('DOMContentLoaded', function() {
-  const carousels = document.querySelectorAll('.testimonial-carousel');
-  
-  carousels.forEach(carousel => {
-    const slides = carousel.querySelectorAll('.testimonial-slide');
-    const prevBtn = carousel.querySelector('.carousel-prev');
-    const nextBtn = carousel.querySelector('.carousel-next');
-    const dotsContainer = carousel.querySelector('.carousel-dots');
-    
-    if (!slides.length || !prevBtn || !nextBtn || !dotsContainer) return;
-    
-    let currentSlide = 0;
-    let autoRotateInterval;
-    
-    // Create dots
-    slides.forEach((_, index) => {
-      const dot = document.createElement('div');
-      dot.classList.add('carousel-dot');
-      if (index === 0) dot.classList.add('active');
-      dot.addEventListener('click', () => {
-        goToSlide(index);
-        resetAutoRotate();
-      });
-      dotsContainer.appendChild(dot);
-    });
-    
-    const dots = carousel.querySelectorAll('.carousel-dot');
-    
-    function goToSlide(n) {
-      slides[currentSlide].classList.remove('active');
-      dots[currentSlide].classList.remove('active');
-      
-      currentSlide = (n + slides.length) % slides.length;
-      
-      slides[currentSlide].classList.add('active');
-      dots[currentSlide].classList.add('active');
-    }
-    
-    function resetAutoRotate() {
-      clearInterval(autoRotateInterval);
-      autoRotateInterval = setInterval(() => goToSlide(currentSlide + 1), 6000);
-    }
-    
-    prevBtn.addEventListener('click', () => {
-      goToSlide(currentSlide - 1);
-      resetAutoRotate();
-    });
-    
-    nextBtn.addEventListener('click', () => {
-      goToSlide(currentSlide + 1);
-      resetAutoRotate();
-    });
-    
-    // Auto-rotate every 6 seconds
-    autoRotateInterval = setInterval(() => goToSlide(currentSlide + 1), 6000);
-    
-    // Pause on hover
-    carousel.addEventListener('mouseenter', () => clearInterval(autoRotateInterval));
-    carousel.addEventListener('mouseleave', resetAutoRotate);
-  });
-});
